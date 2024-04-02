@@ -8,9 +8,9 @@ import re
 
 
 
-regexCode = "[\+]?[\s\([0-9\)]*\d[0-9\-\s]*\d"
-generationRegexCode = f"[\+]exactCallingCode[0-9\s\-]*\d"
-
+regexCode = r'[\+]?[\s\([0-9\)]*\d[0-9\-\s]*\d' # for all numbers in text
+generationRegexCode = rf'[\+]exactCallingCode[0-9\s\-]*\d' # for special country
+exactCallingCode = ''
 numberifies = []
 text = """ Yalnızlıkla dolu bir gecede, telefonumun ekranında beliren numaralar yüreğimi yerinden oynatmıştı. +61 2 1234 5678, +86 10 1234 5678, +1 (555) 123-4567, +994 55 555 55 55,    10 225 35 15, +994 050 343 33 11 numaraları... Hepsi birer umut ışığı gibi parlamıştı karanlık odamda. Gözlerim hızla numaraları okurken, kalbim fısıldıyordu: "Acaba kim?"
 
@@ -79,18 +79,19 @@ with open(file_path, 'w') as file:
     file.write(json_data)
 
 
-exactCountry = 'Azerbaijan'
+user_exactCountry = input("Enter a Country: ")
 
 for numberify in numberifies:
-    if numberify.Country == exactCountry:
-        print(exactCountry)
+    if numberify.Country[0] == user_exactCountry:
+        exactCallingCode = numberify.CallingCode[0]
+        print(numberify.CallingCode[0])
 
-exactCallingCode = ''
 
-generationRegexCode.replace('exactCallingCode',exactCallingCode)
+generationRegexCode = generationRegexCode.replace('exactCallingCode',exactCallingCode)
+
+print(generationRegexCode)
 
 matchs = re.findall(generationRegexCode, text)
-
 
 print(matchs)
 
