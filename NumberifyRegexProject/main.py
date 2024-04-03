@@ -100,3 +100,4 @@ print(generationRegexCode)
 
 matchs = re.findall(generationRegexCode, text)
 
+print(matchs)
