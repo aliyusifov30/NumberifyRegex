@@ -9,10 +9,12 @@ import re
 
 
 regexCode = r'[\+]?[\s\([0-9\)]*\d[0-9\-\s]*\d' # for all numbers in text
-generationRegexCode = rf'[\+]exactCallingCode[0]?[0-9\s\-]{8,9}' # for special country
-numberLengthRegexCode = r'[0-9\(\)]+'
+generationRegexCode = rf'[\+]#exactCallingCode##exactExtraCode#(\s?[0-9]\s?)#extraNumberLength#' # for special country
+numberExtraCodeRegexCode = r'\(?[0-9\(\)\/]+'
 
 exactCallingCode = ''
+exactExtraCode = ''
+extraNumberLength = ''
 numberifies = []
 text = """ Yalnızlıkla dolu bir gecede, telefonumun ekranında beliren numaralar yüreğimi yerinden oynatmıştı. +61 2 1234 5678, +86 10 1234 5678, +1 (555) 123-4567, +994 55 555 55 55,    10 225 35 15, +994 050 343 33 11 numaraları... Hepsi birer umut ışığı gibi parlamıştı karanlık odamda. Gözlerim hızla numaraları okurken, kalbim fısıldıyordu: "Acaba kim?"
 
@@ -62,12 +64,26 @@ def scrape_table_to_json(url):
                 if callingCode: 
                     numberify.CallingCode =  [a.text.strip() for a in callingCode]
                     isUsed = True
-                if numberSize: 
-                    numberify.NumberLength =  [a.text.strip() for a in numberSize]
-                    numberify.NumberLength = numberify.NumberLength[0].split('digits')[0].strip()
+                if numberSize: # this side must be refactor
+                    numberLength = [a.text.strip() for a in numberSize][0].split('digits')[0].strip()
+                    numberify.NumberLength = numberLength
 
+                    numbers = re.findall(numberExtraCodeRegexCode,numberify.NumberLength)
+
+
+                    for number in numbers:
+                        if str.__contains__(number,')'):
+                            number =  number.replace(')','').replace('(','')
+                            numberify.ExtraCode = number 
+                            if str.__contains__(number,'/'):
+                                numberify.ExtraCode =  number.replace('/',',')
+                        numberify.NumberLength = number
+
+                    print(numberLength)
+
+                    if str.__contains__(numberLength,'to'):
+                        numberify.NumberLength = numberLength.replace('to',',').replace(' ','')
                     
-
                     isUsed = True
 
                 if isUsed: numberifies.append(numberify)
@@ -94,10 +110,13 @@ user_exactCountry = input("Enter a Country: ")
 for numberify in numberifies:
     if numberify.Country[0] == user_exactCountry:
         exactCallingCode = numberify.CallingCode[0]
+        extraNumberLength = f'{{{numberify.NumberLength}}}'
+        exactExtraCode = numberify.ExtraCode
         print(numberify.CallingCode[0])
 
-
-generationRegexCode = generationRegexCode.replace('exactCallingCode',exactCallingCode)
+generationRegexCode = generationRegexCode.replace('#exactCallingCode#',exactCallingCode)
+generationRegexCode = generationRegexCode.replace('#exactExtraCode#',exactExtraCode)
+generationRegexCode = generationRegexCode.replace('#extraNumberLength#',extraNumberLength)
 
 print(generationRegexCode)
 
