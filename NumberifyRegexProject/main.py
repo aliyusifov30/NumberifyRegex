@@ -9,7 +9,7 @@ import re
 
 
 regexCode = r'[\+]?[\s\([0-9\)]*\d[0-9\-\s]*\d' # for all numbers in text
-generationRegexCode = rf'[\+]exactCallingCode[0-9\s\-]*\d' # for special country
+generationRegexCode = rf'[\+]exactCallingCode[0]?[0-9\s\-]{8,9}' # for special country
 numberLengthRegexCode = r'[0-9\(\)]+'
 
 exactCallingCode = ''
@@ -65,6 +65,9 @@ def scrape_table_to_json(url):
                 if numberSize: 
                     numberify.NumberLength =  [a.text.strip() for a in numberSize]
                     numberify.NumberLength = numberify.NumberLength[0].split('digits')[0].strip()
+
+                    
+
                     isUsed = True
 
                 if isUsed: numberifies.append(numberify)
