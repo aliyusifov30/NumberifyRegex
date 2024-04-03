@@ -2,6 +2,11 @@
 
 class NumberifyDTO:
     Country = "",
-    CallingCode = 0
+    CallingCode = 0,
+    NumberLength = ''
 
 
+
+
+def analyzeNumberifyLength(numberText):
+    numberText.split(',')
