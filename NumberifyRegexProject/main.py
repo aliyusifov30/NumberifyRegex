@@ -9,14 +9,14 @@ import re
 
 
 regexCode = r'[\+]?[\s\([0-9\)]*\d[0-9\-\s]*\d' # for all numbers in text
-generationRegexCode = rf'[\+]#exactCallingCode##exactExtraCode#(\s?[0-9]\s?)#extraNumberLength#' # for special country
+generationRegexCode = rf'[\+]#exactCallingCode##exactExtraCode#(\s?[0-9]\s?0?)#extraNumberLength#' # for special country
 numberExtraCodeRegexCode = r'\(?[0-9\(\)\/]+'
 
 exactCallingCode = ''
 exactExtraCode = ''
 extraNumberLength = ''
 numberifies = []
-text = """ Yalnızlıkla dolu bir gecede, telefonumun ekranında beliren numaralar yüreğimi yerinden oynatmıştı. +61 2 1234 5678, +86 10 1234 5678, +1 (555) 123-4567, +994 55 555 55 55,    10 225 35 15, +994 050 343 33 11 numaraları... Hepsi birer umut ışığı gibi parlamıştı karanlık odamda. Gözlerim hızla numaraları okurken, kalbim fısıldıyordu: "Acaba kim?"
+text = """ Yalnızlıkla dolu bir gecede, telefonumun ekranında beliren numaralar yüreğimi yerinden oynatmıştı. +61 2 1234 5678, +86 10 1234 5678, +1 (555) 123-4567, +994 55 555 55 55,    10 225 35 15, +994 050 343 33 11 , +994 55 555 55 55 numaraları... Hepsi birer umut ışığı gibi parlamıştı karanlık odamda. Gözlerim hızla numaraları okurken, kalbim fısıldıyordu: "Acaba kim?"
 
 Birkaç kez nefes alıp verdim, cesaretimi toplamak için. Sonra, titrek bir el ile bir numarayı tuşlamaya başladım. Her tuşa bastığımda kalbim biraz daha hızlanıyor, heyecanla doluyordum. Sanki birinin sesini duymak, onunla konuşmak bana gerçeklik duygusunu yeniden kazandırıyordu.
 
@@ -120,6 +120,7 @@ generationRegexCode = generationRegexCode.replace('#extraNumberLength#',extraNum
 
 print(generationRegexCode)
 
-matchs = re.findall(generationRegexCode, text)
-
-print(matchs)
+for match in re.finditer(generationRegexCode, text):
+    # Eşleşen değerleri yazdır
+    print("Tam Eşleşme:", match.group(0))
+    print("Ülke Kodu:", match.group(1))
